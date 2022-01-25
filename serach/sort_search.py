@@ -14,14 +14,16 @@ class Solution:
             elif sub[split] > target:
                 bs(sub[:split], start)
             else:
-                if split > 0 and sub[split - 1] == target:
-                    bs(sub[:split], start)
-                elif split < len(sub)-1 and sub[split+1] == target:
+                nonlocal min_i, max_i
+                min_i = min(start + split, min_i)
+                max_i = max(start + split, max_i)
+                if split > 0 and sub[split - 1] != target:
                     bs(sub[split+1:], start + split + 1)
+                elif split < len(sub)-1 and sub[split+1] != target:
+                    bs(sub[:split], start)
                 else:
-                    nonlocal min_i, max_i
-                    min_i = min(start + split, min_i)
-                    max_i = max(start + split, max_i)
+                    bs(sub[split+1:], start + split + 1)
+                    bs(sub[:split], start)
 
         nlen = len(nums)
         min_i = nlen
@@ -32,12 +34,14 @@ class Solution:
 
 if __name__ == "__main__":
     inputs = [
+        ([2, 2], 2),
         ([5, 7, 7, 8, 8, 10], 8),
         ([5, 7, 7, 8, 8, 10], 6),
         ([5, 7, 7, 8, 8, 10], 5),
         ([], 0)
     ]
     outputs = [
+        [0,1],
         [3, 4],
         [-1, -1],
         [0, 0],
