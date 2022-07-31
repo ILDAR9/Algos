@@ -10,7 +10,7 @@ class Solution:
             for c in coins:
                 if a - c >= 0:
                     dp[a] = min(dp[a], dp[a-c] + 1)
-        return dp[-1] if dp[-1] != max_non_real else -1
+        return dp[amount] if dp[amount] != max_non_real else -1
 
 
 if __name__ == "__main__":
