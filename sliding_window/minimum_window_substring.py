@@ -1,43 +1,60 @@
+from collections import Counter, defaultdict
+from typing import Tuple
+
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        ts = dict()
-        for c in t:
-            ts[c] = ts.get(c, 0) + 1
-        res = []
-        for i, sh in enumerate(s):
-            if sh not in ts:
-                continue
-            temp = [sh]
-            ts_temp = ts.copy()
-            ts_temp[sh] -= 1
-            if not ts_temp[sh]:
-                del ts_temp[sh]
-            j = i + 1
-            del sh
-            while j < len(s) and ts_temp:
-                ch = s[j]
-                temp.append(ch)
-                if ch in ts_temp:
-                    ts_temp[ch] -= 1
-                    if not ts_temp[ch]:
-                        del ts_temp[ch]
-                j += 1
-            if j == len(s) and ts_temp:
-                break
-            if not res or len(res) > len(temp):
-                res = temp
-            i += 1
+        if not t:
+            return ""
+        res: Tuple[int] = (0, 0)
+        res_len = float('infinity')
 
-        return "".join(res)
+        count_T = dict(Counter(t))
+        window_S = defaultdict(lambda : 0)
+
+        need = len(count_T)
+        have = 0
+
+        l = 0
+
+        # update right pointer
+        for r, c in enumerate(s):
+            window_S[c] += 1
+            if c in count_T and window_S[c] == count_T[c]:
+                have += 1
+
+            # find local shortes by changing left pointer
+            while have == need:
+                cur_len = r-l+1
+                if cur_len < res_len:
+                    # update result
+                    res = (l, r)
+                    res_len = cur_len
+                # shrink out window from left by one char
+                left_c = s[l]
+                window_S[left_c] -= 1
+                if left_c in count_T and window_S[left_c] < count_T[left_c]:
+                    have -= 1
+                l += 1
+
+        l, r = res
+        return s[l:r+1] if res_len != float('infinity') else ''
 
 
-if __name__ == '__main__':
-    # s = "ADOBECODEBANC"
-    # t = "ABC"
+if __name__ == "__main__":
+    inputs = [
+        ("ADOBECODEBANC", "ABC"),
+        ("a", "a"),
+        ("a", "aa")
+    ]
+    outputs = [
+        "BANC",
+        "a",
+        ""
+    ]
 
-    s = "a"
-    t = "aa"
+    sol = Solution()
+    for (s, t), expected in zip(inputs, outputs):
+        res = sol.minWindow(s, t)
+        assert res == expected, f"{res} while expected {expected}"
+        print('pass')
 
-    # "BANC"
-    res = Solution().minWindow(s, t)
-    print(f"Res: '{res}'")

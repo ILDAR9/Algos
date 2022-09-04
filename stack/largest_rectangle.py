@@ -8,8 +8,8 @@ class Solution:
         max_area = 0
         heights.append(0)
         for i, v in enumerate(heights + [0]):
+            # peek
             idx = stack[-1]
-            # print('v', v, 'idx', idx, 'heights[idx]', heights[idx])
             if v >= heights[idx]:
                 stack.append(i)
                 continue
@@ -22,7 +22,6 @@ class Solution:
                 if area > max_area:
                     max_area = area
             stack.append(i)
-            # print('max_area', max_area, '\n')
 
         return max_area
 
