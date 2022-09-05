@@ -1,6 +1,8 @@
 from typing import List
 import sys
 
+# best time to buy
+
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         min_price, max_profit = sys.maxsize, 0
